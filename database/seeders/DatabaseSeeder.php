@@ -33,19 +33,19 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Stuart Todd',
                 'email' => 'stuarttodd444@gmail.com',
                 'password' => Hash::make('vistech12345'),
-                'permission_level' => 1
+                'permission_id' => 1
             ],
             1 => [
                 'name' => 'James Garvey',
                 'email' => 'james@garveys.co.uk',
                 'password' => Hash::make('vistech12345'),
-                'permission_level' => 1
+                'permission_id' => 1
             ],
             2 => [
                 'name' => 'Test Form Person',
                 'email' => 'stuarttodd444+test@gmail.com',
                 'password' => Hash::make('vistech12345'),
-                'permission_level' => 2
+                'permission_id' => 2
             ],
         ];
 
@@ -106,7 +106,7 @@ class DatabaseSeeder extends Seeder
                 [
                     'name' => $user['name'],
                     'email' => $user['email'],
-                    'permission_level' => $user['permission_level'],
+                    'permission_id' => $user['permission_id'],
                     'password' => $user['password'],
                     'active' => 1,
                     'created_at' => Carbon::now(),
