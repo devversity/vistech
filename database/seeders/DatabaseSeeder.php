@@ -21,6 +21,34 @@ class DatabaseSeeder extends Seeder
     {
 //        'password' => Hash::make('Punchbag386')
 
+//        $table->string('name');
+//        $table->string('email')->unique();
+//        $table->timestamp('email_verified_at')->nullable();
+//        $table->string('password');
+//        $table->boolean('active')->default(false);
+//        $table->foreignId('permission_id');
+
+        $users = [
+            0 => [
+                'name' => 'Stuart Todd',
+                'email' => 'stuarttodd444@gmail.com',
+                'password' => Hash::make('vistech12345'),
+                'permission_level' => 1
+            ],
+            1 => [
+                'name' => 'James Garvey',
+                'email' => 'james@garveys.co.uk',
+                'password' => Hash::make('vistech12345'),
+                'permission_level' => 1
+            ],
+            2 => [
+                'name' => 'Test Form Person',
+                'email' => 'stuarttodd444+test@gmail.com',
+                'password' => Hash::make('vistech12345'),
+                'permission_level' => 2
+            ],
+        ];
+
         // Forms
         $forms = [
             'Incident Report' => 'incident_report',
@@ -41,7 +69,98 @@ class DatabaseSeeder extends Seeder
             'IMAGE'
         ];
 
-        $allFormFields = [
+        $allFormFields = $this->getFormFields();
+
+        // Emails
+        $emails = [
+            0 => [
+                'name' => 'Stuart Todd',
+                'email' => 'stuarttodd444@gmail.com',
+            ],
+            1 => [
+                'name' => 'James Garvey',
+                'email' => 'james@garveys.co.uk',
+            ]
+        ];
+
+        foreach ($allFormFields as $formId => $formFields) {
+            foreach ($formFields as $fieldName => $formField) {
+                DB::table('fields')->insert(
+                    [
+                        'name' => $fieldName,
+                        'form_id' => $formId,
+                        'nice_name' => $formField['nice_name'],
+                        'field_type_id' => $formField['field_type_id'],
+                        'default' => $formField['default'],
+                        'options' => $formField['options'],
+                        'active' => 1,
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now()
+                    ],
+                );
+            }
+        }
+
+        foreach ($users as $user) {
+            DB::table('users')->insert(
+                [
+                    'name' => $user['name'],
+                    'email' => $user['email'],
+                    'permission_level' => $user['permission_level'],
+                    'password' => $user['password'],
+                    'active' => 1,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                ],
+            );
+        }
+
+        foreach ($emails as $email) {
+            DB::table('emails')->insert(
+                [
+                    'name' => $email['name'],
+                    'email' => $email['email'],
+                    'active' => 1,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                ],
+            );
+        }
+
+        foreach ($forms as $formName => $formView) {
+            DB::table('forms')->insert(
+                [
+                    'name' => $formName,
+                    'view' => $formView,
+                    'active' => 1,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                ]
+            );
+        }
+
+        foreach ($types as $type) {
+            DB::table('field_types')->insert(
+                [
+                    'name' => $type,
+                    'active' => 1,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                ]
+            );
+        }
+
+
+    }
+
+    /**
+     * Get form fields
+     *
+     * @return \array[][]
+     */
+    private function getFormFields()
+    {
+        return [
             1 => [
                 'site_name' => [
                     'nice_name' => 'Site Name',
@@ -785,72 +904,5 @@ class DatabaseSeeder extends Seeder
 
             ]
         ];
-
-        // Emails
-        $emails = [
-            0 => [
-                'name' => 'Stuart Todd',
-                'email' => 'stuarttodd444@gmail.com',
-            ],
-            1 => [
-                'name' => 'James Garvey',
-                'email' => 'james@garveys.co.uk',
-            ]
-        ];
-
-        foreach ($allFormFields as $formId => $formFields) {
-            foreach ($formFields as $fieldName => $formField) {
-                DB::table('fields')->insert(
-                    [
-                        'name' => $fieldName,
-                        'form_id' => $formId,
-                        'nice_name' => $formField['nice_name'],
-                        'field_type_id' => $formField['field_type_id'],
-                        'default' => $formField['default'],
-                        'options' => $formField['options'],
-                        'active' => 1,
-                        'created_at' => Carbon::now(),
-                        'updated_at' => Carbon::now()
-                    ],
-                );
-            }
-        }
-
-        foreach ($emails as $email) {
-            DB::table('emails')->insert(
-                [
-                    'name' => $email['name'],
-                    'email' => $email['email'],
-                    'active' => 1,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now()
-                ],
-            );
-        }
-
-        foreach ($forms as $formName => $formView) {
-            DB::table('forms')->insert(
-                [
-                    'name' => $formName,
-                    'view' => $formView,
-                    'active' => 1,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now()
-                ]
-            );
-        }
-
-        foreach ($types as $type) {
-            DB::table('field_types')->insert(
-                [
-                    'name' => $type,
-                    'active' => 1,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now()
-                ]
-            );
-        }
-
-
     }
 }
