@@ -19,15 +19,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-//        'password' => Hash::make('Punchbag386')
-
-//        $table->string('name');
-//        $table->string('email')->unique();
-//        $table->timestamp('email_verified_at')->nullable();
-//        $table->string('password');
-//        $table->boolean('active')->default(false);
-//        $table->foreignId('permission_id');
-
         $users = [
             0 => [
                 'name' => 'Stuart Todd',
