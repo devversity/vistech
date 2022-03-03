@@ -46,10 +46,6 @@
                                         <option value="0">Disabled</option>
                                         <option value="1">Enabled</option>
                                     </select>
-                                    <br/>
-                                    <label for="password-new">Password</label>
-                                    <input type="password" name="password" class="form-control" id="password-new"
-                                           placeholder="" value="">
                                 </div>
                                 <div class="modal-footer justify-content-between">
                                     <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close
@@ -136,11 +132,6 @@
                                                             Enabled
                                                         </option>
                                                     </select>
-                                                    <br/>
-                                                    <label for="password-{{$row->id}}">Password (leave empty to
-                                                        ignore)</label>
-                                                    <input type="password" name="password" class="form-control"
-                                                           id="password-{{$row->id}}" placeholder="" value="">
 
                                                 </div>
                                                 <div class="modal-footer justify-content-between">
@@ -247,7 +238,6 @@
             let name = $("#name" + append).val();
             let email = $("#email" + append).val();
             let active = $("#active" + append).val();
-            let password = $("#password" + append).val();
 
             if (name === '') {
                 error_string += '<li>Please provide a name.</li>';
