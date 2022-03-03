@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 /**
  * Vistech controller
@@ -58,11 +58,43 @@ class VistechController extends Controller
             return redirect("/");
         }
 
+        $data = null;
+        $headers = null;
+
+        switch ($type) {
+            case "administrators":
+                $headers = [
+                    'id',
+                    'name',
+                    'email',
+                    'status'
+                ];
+                $data = User::where('active', '=', 1)->where('permission_id', '=', 1)->get();
+
+                break;
+            case "users":
+                $headers = [
+                    'id',
+                    'name',
+                    'email',
+                    'status'
+                ];
+                $data = User::where('active', '=', 1)->where('permission_id', '=', 2)->get();
+
+                break;
+            case "answers":
+                break;
+            case "emails":
+                break;
+        }
+
         // View
         return view('admin_' . $type, [
             'user' => Auth::user(),
             'title' => ucwords(str_replace("_", " ", $type)),
-            'link' => url()->current()
+            'link' => url()->current(),
+            'data' => $data,
+            'headers' => $headers,
         ]);
     }
 
@@ -78,11 +110,23 @@ class VistechController extends Controller
             return redirect("/");
         }
 
+        $data = null;
+        $headers = null;
+
+        switch ($type) {
+            case "forms":
+                break;
+            case "form_submissions":
+                break;
+        }
+
         // View
         return view('user_' . $type, [
             'user' => Auth::user(),
             'title' => ucwords(str_replace("_", " ", $type)),
-            'link' => url()->current()
+            'link' => url()->current(),
+            'data' => $data,
+            'headers' => $headers,
         ]);
     }
 
