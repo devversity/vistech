@@ -8,9 +8,16 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#insert-modal">
-                    Add new
-                </button>
+                <div class="row">
+                    <div class="col-10">
+                        <p>A list of users who can log into the system and submit forms.</p>
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-primary" style="float:right" data-toggle="modal" data-target="#insert-modal">
+                            Add new
+                        </button>
+                    </div>
+                </div>
 
                 <div class="modal fade" id="insert-modal">
                     <div class="modal-dialog">

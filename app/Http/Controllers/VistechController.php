@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Email;
 
 /**
  * Vistech controller
@@ -85,6 +86,13 @@ class VistechController extends Controller
             case "answers":
                 break;
             case "emails":
+                $headers = [
+                    'id',
+                    'name',
+                    'email',
+                    'status'
+                ];
+                $data = Email::where('active', '=', 1)->get();
                 break;
         }
 
