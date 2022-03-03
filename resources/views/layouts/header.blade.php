@@ -114,7 +114,7 @@
                             <li class="nav-item">
                                 <a href="/user/forms" class="nav-link {{ request()->path() === 'user/forms' ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>Submit Form</p>
+                                    <p>Forms</p>
                                 </a>
                             </li>
                             <li class="nav-item">

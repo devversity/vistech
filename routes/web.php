@@ -21,10 +21,22 @@ Route::get('/', [VistechController::class, 'index'])
 
 Route::get('/admin/{i}', [VistechController::class, 'admin'])
     ->middleware(['auth'])
-    ->name('admin_administrators');
+    ->name('admin');
 
 Route::get('/user/{i}', [VistechController::class, 'user'])
     ->middleware(['auth'])
-    ->name('user_forms');
+    ->name('user');
+
+Route::get('/delete/{i}/{j}', [VistechController::class, 'delete'])
+    ->middleware(['auth'])
+    ->name('delete');
+
+Route::post('/edit/{i}/{j}', [VistechController::class, 'edit'])
+    ->middleware(['auth'])
+    ->name('edit');
+
+Route::post('/insert/{i}', [VistechController::class, 'insert'])
+    ->middleware(['auth'])
+    ->name('insert');
 
 require __DIR__.'/auth.php';

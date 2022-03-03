@@ -95,6 +95,7 @@ class VistechController extends Controller
             'link' => url()->current(),
             'data' => $data,
             'headers' => $headers,
+            'type' => $type
         ]);
     }
 
@@ -127,7 +128,41 @@ class VistechController extends Controller
             'link' => url()->current(),
             'data' => $data,
             'headers' => $headers,
+            'type' => $type
         ]);
+    }
+
+
+    /**
+     * Delete a record
+     *
+     * @param string $type
+     * @param int $id
+     */
+    public function delete(Request $request, string $type, int $id)
+    {
+        dd($type, $id, $request->post(), $request->query());
+    }
+
+    /**
+     * Edit a record
+     *
+     * @param string $type
+     * @param int $id
+     */
+    public function edit(Request $request, string $type, int $id)
+    {
+        dd($type, $id, $request->post(), $request->query());
+    }
+
+    /**
+     * Insert a record
+     *
+     * @param string $type
+     */
+    public function insert(Request $request, string $type)
+    {
+        dd($type, $request->post(), $request->query());
     }
 
 }
