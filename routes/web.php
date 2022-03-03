@@ -19,4 +19,12 @@ Route::get('/', [VistechController::class, 'index'])
     ->middleware(['auth'])
     ->name('dashboard');
 
+Route::get('/admin/{i}', [VistechController::class, 'admin'])
+    ->middleware(['auth'])
+    ->name('admin_administrators');
+
+Route::get('/user/{i}', [VistechController::class, 'user'])
+    ->middleware(['auth'])
+    ->name('user_forms');
+
 require __DIR__.'/auth.php';

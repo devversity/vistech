@@ -39,7 +39,7 @@
         <!-- Left navbar links -->
         <ul class="navbar-nav">
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="/" class="nav-link">Logged in as {!! '<strong>' . $user->name . '</strong> (' . $user->email . ')' !!}</a>
+                <a href="/" class="nav-link">Logged in as {{ $user->permission_id === 1 ? 'Admin' : 'User' }}: {!! '<strong>' . $user->name . '</strong> (' . $user->email . ')' !!}</a>
             </li>
         </ul>
 
@@ -81,36 +81,58 @@
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
+                            @if($user->permission_id === 1)
                             <li class="nav-item">
-                                <a href="/" class="nav-link active">
+                                <a href="/admin/administrators" class="nav-link {{ request()->path() === 'admin/administrators' ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>Administators</p>
+                                    <p>Administrators</p>
                                 </a>
                             </li>
+                            @endif
+                            @if($user->permission_id === 1)
                             <li class="nav-item">
-                                <a href="/" class="nav-link">
+                                <a href="/admin/users" class="nav-link {{ request()->path() === 'admin/users' ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Users</p>
                                 </a>
                             </li>
+                            @endif
+                            @if($user->permission_id === 1 && false)
                             <li class="nav-item">
-                                <a href="/" class="nav-link">
+                                <a href="/admin/forms" class="nav-link {{ request()->path() === 'admin/forms' ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>Forms</p>
+                                    <p>Forms (Admin)</p>
+                                </a>
+                            </li>
+                            @endif
+                            <li class="nav-item">
+                                <a href="/user/forms" class="nav-link {{ request()->path() === 'user/forms' ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Submit Form</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="/" class="nav-link">
+                                <a href="/user/form_submissions" class="nav-link {{ request()->path() === 'user/form_submissions' ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Submission Log</p>
+                                </a>
+                            </li>
+                            @if($user->permission_id === 1)
+                            <li class="nav-item">
+                                <a href="/admin/answers" class="nav-link {{ request()->path() === 'admin/answers' ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Answers</p>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a href="/" class="nav-link">
+                            @endif
+                            @if($user->permission_id === 1)
+                                <li class="nav-item">
+                                <a href="/admin/emails" class="nav-link {{ request()->path() === 'admin/emails' ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Emails</p>
                                 </a>
                             </li>
+                            @endif
                         </ul>
                     </li>
                 </ul>
@@ -122,3 +144,22 @@
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>{{!empty($title) ? $title : 'Dashboard'}}</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+                            @if(!empty($title) && !empty($link))
+                            <li class="breadcrumb-item"><a href="{{$link}}">{{$title}}</a></li>
+                            @endif
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="content">
+            <div class="container-fluid">
