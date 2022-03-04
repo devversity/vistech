@@ -29,7 +29,7 @@
                                 </button>
                             </div>
 
-                            <form action="/insert/{{ $type }}?redirect={{ url()->current() }}'" method="post"
+                            <form action="/insert/{{ $type }}?redirect={{ url()->current() }}" method="post"
                                   id="insert">
                                 @csrf
                                 <div class="modal-body">
@@ -113,7 +113,7 @@
                                                 </button>
                                             </div>
                                             <form
-                                                action="/edit/{{ $type }}/{{$row->id}}?redirect={{ url()->current() }}'"
+                                                action="/edit/{{ $type }}/{{$row->id}}?redirect={{ url()->current() }}"
                                                 method="post" id="edit-{{$row->id}}">
                                                 @csrf
                                                 <div class="modal-body">
@@ -178,7 +178,7 @@
                                                         data-dismiss="modal">Close
                                                 </button>
                                                 <button type="button" class="btn btn-outline-light"
-                                                        onclick="location.href='/delete/{{ $type }}/{{$row->id}}?redirect={{ url()->current() }}'">
+                                                        onclick="location.href='/delete/{{ $type }}/{{$row->id}}?redirect={{ url()->current() }}">
                                                     Confirm
                                                 </button>
                                             </div>

@@ -11,7 +11,7 @@
         <div class="card">
             <!-- /.card-header -->
             <div class="card-body p-5">
-                <form action="/insert/answers/{{$id}}" enctype="multipart/form-data" method="post">
+                <form action="/insert/answers/{{$id}}?redirect=/user/form_submissions/" enctype="multipart/form-data" method="post">
                     @csrf
                     <div class="card card-primary card-outline p-5">
                     @foreach ($fields as $key => $field)

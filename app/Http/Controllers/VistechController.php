@@ -10,6 +10,7 @@ use App\Models\Email;
 use App\Models\Form;
 use App\Models\Answer;
 
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
@@ -82,7 +83,7 @@ class VistechController extends Controller
                     'email',
                     'status'
                 ];
-                $data = User::where('active', '=', 1)->where('permission_id', '=', 1)->get();
+                $data = User::where('permission_id', '=', 1)->get();
 
                 break;
             case "users":
@@ -92,11 +93,10 @@ class VistechController extends Controller
                     'email',
                     'status'
                 ];
-                $data = User::where('active', '=', 1)->where('permission_id', '=', 2)->get();
+                $data = User::where('permission_id', '=', 2)->get();
 
                 break;
             case "answers":
-
                 $headers = [
                     'id',
                     'user',
@@ -105,7 +105,6 @@ class VistechController extends Controller
                     'submission_date',
                     'recipients',
                 ];
-
                 $data = Answer::with('user', 'form')->get();
 
                 break;
@@ -116,7 +115,7 @@ class VistechController extends Controller
                     'email',
                     'status'
                 ];
-                $data = Email::where('active', '=', 1)->get();
+                $data = Email::all();
                 break;
         }
 
@@ -206,7 +205,20 @@ class VistechController extends Controller
      */
     public function delete(Request $request, string $type, int $id)
     {
-        dd($type, $id, $request->post(), $request->query());
+        switch ($type) {
+            case "administrators":
+            case "users":
+                User::find($id)->delete();
+                break;
+            case "emails":
+                Email::find($id)->delete();
+                break;
+            default:
+                dd($type, $id);
+                break;
+        }
+
+        return redirect($request->query('redirect', '/') . '?deleted=Y');
     }
 
     /**
@@ -232,7 +244,50 @@ class VistechController extends Controller
         // Set formData
         $formData = array_merge($request->post(), $files);
 
-        dd($type, $id, $formData, $request->query());
+        switch ($type) {
+            case "administrators":
+            case "users":
+
+                $user = User::find($id);
+
+                if (isset($formData['name'])) {
+                    $user->name = $formData['name'];
+                }
+                if (isset($formData['email'])) {
+                    $user->email = $formData['email'];
+                }
+                if (isset($formData['active'])) {
+                    $user->active = $formData['active'];
+                }
+                if (!empty($formData['password'])) {
+                    $user->password = Hash::make($formData['password']);
+                }
+
+                $user->save();
+                break;
+            case "emails":
+                $email = Email::find($id);
+
+                if (isset($formData['name'])) {
+                    $email->name = $formData['name'];
+                }
+                if (isset($formData['email'])) {
+                    $email->email = $formData['email'];
+                }
+                if (isset($formData['active'])) {
+                    $email->active = $formData['active'];
+                }
+
+                $email->save();
+                break;
+
+            default:
+
+                dd($type, $formData);
+                break;
+        }
+
+        return redirect($request->query('redirect', '/') . '?updated=Y');
     }
 
     /**
@@ -262,26 +317,93 @@ class VistechController extends Controller
 
         // Get emails
         $emails = $request->post('emails', []);
-        $emailsOther = explode(",", $request->post('email_other'));
+        $emailsOther = explode(",", $request->post('email_other', ''));
         $emails = array_merge($emails, $emailsOther);
 
         // Set formData
         $formData = array_merge($request->post(), $files);
 
-        // Log answer
-        $answer = new Answer;
-        $answer->user_id = $user->id;
-        $answer->form_id = $id;
-        $answer->submission_date = Carbon::now()->toDate();
-        $answer->site = ''; // For later.
-        $answer->form_data = json_encode($formData);
-        $answer->emails = json_encode($emails);
-        $answer->save();
+        switch ($type) {
+            case "users":
+                $user = new User;
 
-        // Send email (if applicable)
+                $user->permission_id = 2;
 
-        // Redirect
-        return redirect('/user/form_submissions?successful=Y');
+                if (isset($formData['name'])) {
+                    $user->name = $formData['name'];
+                }
+                if (isset($formData['email'])) {
+                    $user->email = $formData['email'];
+                }
+                if (isset($formData['active'])) {
+                    $user->active = $formData['active'];
+                }
+                if (!empty($formData['password'])) {
+                    $user->password = Hash::make($formData['password']);
+                }
+
+                $user->save();
+                break;
+            case "administrators":
+                $user = new User;
+
+                $user->permission_id = 1;
+
+                if (isset($formData['name'])) {
+                    $user->name = $formData['name'];
+                }
+                if (isset($formData['email'])) {
+                    $user->email = $formData['email'];
+                }
+                if (isset($formData['active'])) {
+                    $user->active = $formData['active'];
+                }
+                if (!empty($formData['password'])) {
+                    $user->password = Hash::make($formData['password']);
+                }
+
+                $user->save();
+                break;
+            case "emails":
+                $email = new Email;
+
+                if (isset($formData['name'])) {
+                    $email->name = $formData['name'];
+                }
+                if (isset($formData['email'])) {
+                    $email->email = $formData['email'];
+                }
+                if (isset($formData['active'])) {
+                    $email->active = $formData['active'];
+                }
+
+                $email->save();
+                break;
+            case "answers":
+
+                // Log answer
+                $answer = new Answer;
+                $answer->user_id = $user->id;
+                $answer->form_id = $id;
+                $answer->submission_date = Carbon::now()->toDate();
+                $answer->site = ''; // For later.
+                $answer->form_data = json_encode($formData);
+                $answer->emails = json_encode($emails);
+
+                $answer->save();
+
+                // Send email (if applicable)
+
+                break;
+            default:
+
+                dd($type, $formData);
+                break;
+        }
+
+        $redirect = $request->query('redirect', '/') . '?updated=Y';
+
+        return redirect($redirect);
     }
 
     /**
