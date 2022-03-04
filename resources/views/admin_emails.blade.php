@@ -197,69 +197,7 @@
 </div>
 
 @section('specific_scripts')
-    <!-- DataTables  & Plugins -->
-    <script src="{{ asset('theme/plugins/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('theme/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('theme/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ asset('theme/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('theme/plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('theme/plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('theme//plugins/jszip/jszip.min.js') }}"></script>
-    <script src="{{ asset('theme/plugins/pdfmake/pdfmake.min.js') }}"></script>
-    <script src="{{ asset('theme/plugins/pdfmake/vfs_fonts.js') }}"></script>
-    <script src="{{ asset('theme/plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
-    <script src="{{ asset('theme/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('theme/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
-    <!-- jquery-validation -->
-    <script src="{{ asset('theme/plugins/jquery-validation/jquery.validate.min.js') }}"></script>
-    <script src="{{ asset('theme/plugins/jquery-validation/additional-methods.min.js') }}"></script>
-
-    <!-- Page specific script -->
-    <script>
-        $(function () {
-            $("#data").DataTable({
-                "responsive": true, "lengthChange": false, "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-        });
-
-        function validateForm(id, append) {
-            let form = $('#' + id);
-            let errors = $('#errors' + append);
-            let error_string = '';
-
-            const validateEmail = (email) => {
-                return email.match(
-                    /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                );
-            };
-
-            let name = $("#name" + append).val();
-            let email = $("#email" + append).val();
-            let active = $("#active" + append).val();
-
-            if (name === '') {
-                error_string += '<li>Please provide a name.</li>';
-            }
-            if (active === '') {
-                error_string += '<li>Please provide a status.</li>';
-            }
-            if (!validateEmail(email)) {
-                error_string += '<li>Please provide a valid email.</li>';
-            }
-
-            if (error_string != '') {
-                error_string = '<p><strong>Validation errors:</strong></p><ul>' + error_string + '</ul>';
-                errors.html(error_string);
-                return false;
-            }
-
-            return form.submit();
-        }
-    </script>
 @endsection
 
 @include('layouts.footer')
-
-

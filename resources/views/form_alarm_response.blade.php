@@ -3,6 +3,8 @@
 @endsection
 
 @include('layouts.header')
+<link id="bs-css" href="{{ asset('theme/datepicker/css/bootstrap-datepicker3.css') }}" rel="stylesheet">
+<link id="bs-css" href="https://netdna.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
 
 <div class="row">
     <div class="col-12">
