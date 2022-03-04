@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewAdministrator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
-
+use Illuminate\Support\Facades\Mail;
 
 /**
  * Vistech controller
@@ -53,6 +54,29 @@ class VistechController extends Controller
             'user' => Auth::user(),
             'forms' => $forms
         ]);
+    }
+
+    public function test_email()
+    {
+        $user = Auth::user();
+
+        foreach (['stuarttodd444@gmail.com'] as $recipient) {
+
+            $mailData = [
+                'intro' => 'Your new Administrator account has been created',
+                'fields' => [
+                    'name' => 'Stuart Todd',
+                    'email' => 'stuart444@gmail.com',
+                    'password' => 'Stu',
+                ],
+                'url' => url('/')
+            ];
+
+            $mail = new NewAdministrator($mailData);
+            return $mail->render();
+
+            Mail::to($recipient)->send(new NewAdministrator($mailData));
+        }
     }
 
     /**
