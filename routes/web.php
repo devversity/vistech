@@ -31,6 +31,10 @@ Route::get('/delete/{i}/{j}', [VistechController::class, 'delete'])
     ->middleware(['auth'])
     ->name('delete');
 
+Route::get('/form/submit/{j}', [VistechController::class, 'form'])
+    ->middleware(['auth'])
+    ->name('form_submit');
+
 Route::post('/edit/{i}/{j}', [VistechController::class, 'edit'])
     ->middleware(['auth'])
     ->name('edit');
@@ -38,5 +42,13 @@ Route::post('/edit/{i}/{j}', [VistechController::class, 'edit'])
 Route::post('/insert/{i}', [VistechController::class, 'insert'])
     ->middleware(['auth'])
     ->name('insert');
+
+Route::post('/insert/{i}/{j}', [VistechController::class, 'insert'])
+    ->middleware(['auth'])
+    ->name('insert');
+
+Route::post('/form/redirect', [VistechController::class, 'redirect'])
+    ->middleware(['auth'])
+    ->name('redirect');
 
 require __DIR__.'/auth.php';

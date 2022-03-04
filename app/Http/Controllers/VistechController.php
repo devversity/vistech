@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 use App\Models\User;
 use App\Models\Email;
+use App\Models\Form;
 
 /**
  * Vistech controller
@@ -28,6 +30,7 @@ class VistechController extends Controller
 
     public function __construct()
     {
+
     }
 
     /**
@@ -37,8 +40,11 @@ class VistechController extends Controller
      */
     public function index(Request $request)
     {
+        $forms = Form::where('active', '=', 1)->get();
+
         return view('dashboard', [
             'user' => Auth::user(),
+            'forms' => $forms
         ]);
     }
 
@@ -121,9 +127,20 @@ class VistechController extends Controller
 
         $data = null;
         $headers = null;
+        $emails = null;
 
         switch ($type) {
             case "forms":
+
+                $headers = [
+                    'id',
+                    'name'
+                ];
+
+                $data = Form::with('fields')
+                    ->where('active', '=', 1)
+                    ->get();
+
                 break;
             case "form_submissions":
                 break;
@@ -168,9 +185,75 @@ class VistechController extends Controller
      *
      * @param string $type
      */
-    public function insert(Request $request, string $type)
+    public function insert(Request $request, string $type, int $id = 0)
     {
-        dd($type, $request->post(), $request->query());
+        dd($type, $id, $request->post(), $request->query(), $_FILES, $request->file('vistech_id_badge'));
+
+
+//        $file = $request->file('photo');
+//
+//        //File Name
+//        $file->getClientOriginalName();
+//
+//        //Display File Extension
+//        $file->getClientOriginalExtension();
+//
+//        //Display File Real Path
+//        $file->getRealPath();
+//
+//        //Display File Size
+//        $file->getSize();
+//
+//        //Display File Mime Type
+//        $file->getMimeType();
+//
+//        //Move Uploaded File
+//        $destinationPath = 'uploads';
+//        $file->move($destinationPath,$file->getClientOriginalName());
+    }
+
+    /**
+     * Submit a form
+     *
+     * @param int $id
+     */
+    public function form(int $id)
+    {
+        $data = Form::with('fields', 'fields.type')
+            ->where('id', '=', $id)
+            ->first();
+
+        $view = 'form_default';
+        if (!empty($data->view)) {
+            $view = 'form_' . $data->view;
+        }
+
+        // Create a collection keyed by field name
+        $fields = Form::fieldHtml($data);
+
+        $emails = Email::where('active', '=', 1)
+            ->get();
+
+        // View
+        return view($view, [
+            'user' => Auth::user(),
+            'title' => ucwords(str_replace("_", " ", $data->name)),
+            'link' => url()->current(),
+            'fields' => $fields,
+            'data' => $data,
+            'id' => $id,
+            'emails' => $emails
+        ]);
+    }
+
+    /**
+     * Redirect to the right form
+     *
+     * @param Request $request
+     */
+    public function redirect(Request $request)
+    {
+        return redirect("/form/submit/" . $request->post('id'));
     }
 
 }

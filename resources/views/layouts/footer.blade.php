@@ -46,6 +46,8 @@
 <script src="{{ asset('theme/dist/js/adminlte.js') }}"></script>
 <script src="{{ asset('theme/dist/js/pages/dashboard.js') }}"></script>
 
+<script src="{{ asset('theme/datepicker/js/bootstrap-datepicker.js') }}"></script>
+
 @yield('specific_scripts')
 
 </body>

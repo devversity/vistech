@@ -37,7 +37,28 @@
         </div>
     </div>
 @endif
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-primary card-outline p-4">
+                <h5>Complete a form</h5>
+                <p>Choose a form below to continue:</p>
 
+                <div class="form-group">
+                    <label>Forms</label>
+                    <form action="/form/redirect" method="post">
+                        @csrf
+                    <select name="id" class="form-control" style="width: 100%;" onchange="this.form.submit()">
+                        <option value="">Please choose...</option>
+                        @foreach ($forms as $form)
+                        <option value="{{$form->id}}">{{$form->name}}</option>
+                        @endforeach
+                    </select>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
 @include('layouts.footer')
 
 

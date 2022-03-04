@@ -374,7 +374,7 @@ class DatabaseSeeder extends Seeder
                     'nice_name' => 'Date of Call Out',
                     'default' => null,
                     'options' => null,
-                    'field_type_id' => 1,
+                    'field_type_id' => 7,
                 ],
                 'site_called_out_to' => [
                     'nice_name' => 'Site Called Out To',
@@ -598,7 +598,7 @@ class DatabaseSeeder extends Seeder
                     'nice_name' => 'Vistech ID Badge? If not please take photo',
                     'default' => 'No',
                     'options' => null,
-                    'field_type_id' => 4,
+                    'field_type_id' => 8,
                 ],
                 'sia_badge_on_display' => [
                     'nice_name' => 'SIA Badge on display?',
