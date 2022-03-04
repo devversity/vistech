@@ -8,6 +8,12 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Email;
 use App\Models\Form;
+use App\Models\Answer;
+
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
+
+
 
 /**
  * Vistech controller
@@ -30,7 +36,7 @@ class VistechController extends Controller
 
     public function __construct()
     {
-
+        $this->destinationPath = 'uploads/';
     }
 
     /**
@@ -90,6 +96,18 @@ class VistechController extends Controller
 
                 break;
             case "answers":
+
+                $headers = [
+                    'id',
+                    'user',
+                    'form',
+                    'site',
+                    'submission_date',
+                    'recipients',
+                ];
+
+                $data = Answer::with('user', 'form')->get();
+
                 break;
             case "emails":
                 $headers = [
@@ -120,6 +138,8 @@ class VistechController extends Controller
      */
     public function user(string $type)
     {
+        $user = Auth::user();
+
         // Access restrictions
         if (!in_array($type, $this->endPoints)) {
             return redirect("/");
@@ -143,6 +163,26 @@ class VistechController extends Controller
 
                 break;
             case "form_submissions":
+
+                $headers = [
+                    'id',
+                    'user',
+                    'form',
+                    'site',
+                    'submission_date',
+                    'recipients',
+                ];
+
+
+                if ($user->permission_id === 1) {
+                    $data = Answer::with('user', 'form')
+                        ->get();
+                } else {
+                    $data = Answer::with('user', 'form')
+                        ->where('user_id', '=', $user->id)
+                        ->get();
+                }
+
                 break;
         }
 
@@ -177,39 +217,71 @@ class VistechController extends Controller
      */
     public function edit(Request $request, string $type, int $id)
     {
-        dd($type, $id, $request->post(), $request->query());
+        // List of files submitted
+        $files = [];
+        if (!empty($_FILES)) {
+            foreach ($_FILES as $key => $file) {
+                if (!empty($file['tmp_name'])) {
+                    $fileName = time() . '_' . $file['name'];
+                    $files[$key] = $this->destinationPath . $fileName;
+                    move_uploaded_file($file['tmp_name'], public_path($this->destinationPath) . $fileName);
+                }
+            }
+        }
+
+        // Set formData
+        $formData = array_merge($request->post(), $files);
+
+        dd($type, $id, $formData, $request->query());
     }
 
     /**
      * Insert a record
      *
      * @param string $type
+     * @param int $id
      */
     public function insert(Request $request, string $type, int $id = 0)
     {
-        dd($type, $id, $request->post(), $request->query(), $_FILES, $request->file('vistech_id_badge'));
+        // Set user
+        $user = Auth::user();
 
+        // List of files submitted
+        $files = [];
+        if (!empty($_FILES)) {
+            foreach ($_FILES as $key => $file) {
+                if (!empty($file['tmp_name'])) {
+                    $fileName = time() . '_' . $file['name'];
+                    $files[$key] = [
+                        'filename' => $this->destinationPath . $fileName
+                    ];
+                    move_uploaded_file($file['tmp_name'], public_path($this->destinationPath) . $fileName);
+                }
+            }
+        }
 
-//        $file = $request->file('photo');
-//
-//        //File Name
-//        $file->getClientOriginalName();
-//
-//        //Display File Extension
-//        $file->getClientOriginalExtension();
-//
-//        //Display File Real Path
-//        $file->getRealPath();
-//
-//        //Display File Size
-//        $file->getSize();
-//
-//        //Display File Mime Type
-//        $file->getMimeType();
-//
-//        //Move Uploaded File
-//        $destinationPath = 'uploads';
-//        $file->move($destinationPath,$file->getClientOriginalName());
+        // Get emails
+        $emails = $request->post('emails', []);
+        $emailsOther = explode(",", $request->post('email_other'));
+        $emails = array_merge($emails, $emailsOther);
+
+        // Set formData
+        $formData = array_merge($request->post(), $files);
+
+        // Log answer
+        $answer = new Answer;
+        $answer->user_id = $user->id;
+        $answer->form_id = $id;
+        $answer->submission_date = Carbon::now()->toDate();
+        $answer->site = ''; // For later.
+        $answer->form_data = json_encode($formData);
+        $answer->emails = json_encode($emails);
+        $answer->save();
+
+        // Send email (if applicable)
+
+        // Redirect
+        return redirect('/user/form_submissions?successful=Y');
     }
 
     /**
