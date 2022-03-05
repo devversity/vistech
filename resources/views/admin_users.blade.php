@@ -178,7 +178,7 @@
                                                         data-dismiss="modal">Close
                                                 </button>
                                                 <button type="button" class="btn btn-outline-light"
-                                                        onclick="location.href='/delete/{{ $type }}/{{$row->id}}?redirect={{ url()->current() }}">
+                                                        onclick="location.href='/delete/{{ $type }}/{{$row->id}}?redirect={{ url()->current() }}'">
                                                     Confirm
                                                 </button>
                                             </div>

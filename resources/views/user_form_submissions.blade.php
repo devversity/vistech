@@ -24,18 +24,20 @@
                             <td>#{{$row->id}}</td>
                             <td>{{$row->user->name}}</td>
                             <td>{{$row->form->name}}</td>
-                            <td>#{{$row->site}}</td>
-                            <td>#{{$row->submission_date}}</td>
+                            <td>{{$row->site}}</td>
+                            <td>{{$row->submission_date}}</td>
                             <td>
                                 <?php $emails = json_decode($row->emails); ?>
                                 <ul>
                                     @foreach ($emails as $email)
-                                        <li>{{$email}}</li>
+                                        @if (!empty($email))
+                                            <li>{{$email}}</li>
+                                        @endif
                                     @endforeach
                                 </ul>
                             </td>
                             <td>
-                                <a href="/form/view/1">
+                                <a href="/form/view/{{$row->id}}">
                                     <button type="button" class="btn btn-info">
                                         <i class="fas fa-pencil-alt">
                                         </i>

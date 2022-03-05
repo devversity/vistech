@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\NewAdministrator;
+use App\Mail\NewEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,6 +36,8 @@ class VistechController extends Controller
         'emails'
     ];
 
+    private $from = 'noreply@vistech.co.uk';
+
     public function __construct()
     {
         $this->destinationPath = 'uploads/';
@@ -56,6 +58,66 @@ class VistechController extends Controller
         ]);
     }
 
+    /**
+     * Email submission
+     *
+     * @param Request $request
+     * @param int $answerId
+     * @param int $render
+     */
+    public function email_submission(Request $request, int $answerId, int $render = 0)
+    {
+        // Get answer
+        $answers = Answer::with('user', 'form', 'form.fields')
+            ->where('id', '=', $answerId)
+            ->first();
+
+        // Get form data
+        $formData = collect(json_decode($answers->form_data))->toArray();
+
+        // Introduction text
+        $intro = 'A form submission has been sent by ' . $answers->user->name;
+
+        // Email URL
+        $url = url('/');
+
+        // Template
+        $template = 'new_submission';
+
+        // Subject
+        $subject = 'New Form Submission Sent By ' . $answers->user->name;
+
+        // From
+        $from = $this->from;
+
+        // Get emails
+        $emails = isset($formData['emails']) ?  $formData['emails'] : [];
+        $emailsOther = explode(",", isset($formData['email_other']) ? $formData['email_other'] : '');
+        $emails = array_merge($emails, $emailsOther);
+
+        // Remove certain fields
+        unset($formData['_token']);
+        unset($formData['emails']);
+        unset($formData['email_other']);
+
+        foreach ($emails as $recipient) {
+            $mailData = [
+                'intro' => $intro,
+                'subject' => $subject,
+                'from' => $from,
+                'data' => $formData,
+                'url' => url($url),
+                'template' => $template
+            ];
+
+            $mail = new NewEmail($recipient, $mailData);
+            $mail->send();
+        }
+
+        // Otherwise, redirect
+        return redirect($request->query('redirect', '/') . '?emailed=Y');
+    }
+
     public function test_email()
     {
         $user = Auth::user();
@@ -72,10 +134,8 @@ class VistechController extends Controller
                 'url' => url('/')
             ];
 
-            $mail = new NewAdministrator($mailData);
+            $mail = new NewEmail($mailData);
             return $mail->render();
-
-            Mail::to($recipient)->send(new NewAdministrator($mailData));
         }
     }
 
@@ -325,6 +385,12 @@ class VistechController extends Controller
         // Set user
         $user = Auth::user();
 
+        // Send email or not
+        $sendEmail = false;
+        $template = null;
+        $intro = null;
+        $subject = null;
+
         // List of files submitted
         $files = [];
         if (!empty($_FILES)) {
@@ -347,6 +413,12 @@ class VistechController extends Controller
         // Set formData
         $formData = array_merge($request->post(), $files);
 
+        // Remove certain fields
+        unset($formData['_token']);
+        unset($formData['emails']);
+        unset($formData['email_other']);
+
+
         switch ($type) {
             case "users":
                 $user = new User;
@@ -367,6 +439,16 @@ class VistechController extends Controller
                 }
 
                 $user->save();
+
+                unset($formData['active']);
+
+                // Send user email
+                $sendEmail = true;
+                $emails = [$formData['email']];
+                $template = 'new_user';
+                $intro = 'A user account was set up for you, details below:';
+                $subject = 'Your New User Account';
+
                 break;
             case "administrators":
                 $user = new User;
@@ -385,6 +467,15 @@ class VistechController extends Controller
                 if (!empty($formData['password'])) {
                     $user->password = Hash::make($formData['password']);
                 }
+
+                unset($formData['active']);
+
+                // Send user email
+                $sendEmail = true;
+                $emails = [$formData['email']];
+                $template = 'new_user';
+                $intro = 'An administrator account was set up for you, details below:';
+                $subject = 'Your New Administrator Account';
 
                 $user->save();
                 break;
@@ -417,6 +508,10 @@ class VistechController extends Controller
                 $answer->save();
 
                 // Send email (if applicable)
+                $sendEmail = true;
+                $template = 'new_submission';
+                $intro = 'A form submission has been sent by ' . $user->name;
+                $subject = 'New Form Submission Sent By ' . $user->name;
 
                 break;
             default:
@@ -425,9 +520,29 @@ class VistechController extends Controller
                 break;
         }
 
-        $redirect = $request->query('redirect', '/') . '?updated=Y';
+        if (
+            $sendEmail === true &&
+            !empty($emails)
+        ) {
+            $url = url('/');
+            $from = $this->from;
 
-        return redirect($redirect);
+            foreach ($emails as $recipient) {
+                $mailData = [
+                    'intro' => $intro,
+                    'subject' => $subject,
+                    'from' => $from,
+                    'data' => $formData,
+                    'url' => url($url),
+                    'template' => $template
+                ];
+
+                $mail = new NewEmail($recipient, $mailData);
+                $mail->send();
+            }
+        }
+
+        return redirect($request->query('redirect', '/') . '?updated=Y');
     }
 
     /**
@@ -453,14 +568,76 @@ class VistechController extends Controller
             ->get();
 
         // View
+        $header = view('layouts.form_header', [
+            'mode' => 'insert',
+            'answers' => null,
+            'id' => $data->id,
+        ]);
+        $footer = view('layouts.form_footer', [
+            'mode' => 'insert',
+            'id' => $data->id,
+            'emails' => $emails,
+        ]);
+
         return view($view, [
             'user' => Auth::user(),
             'title' => ucwords(str_replace("_", " ", $data->name)),
             'link' => url()->current(),
             'fields' => $fields,
             'data' => $data,
-            'id' => $id,
-            'emails' => $emails
+            'id' => $data->id,
+            'answers' => null,
+            'header' => $header,
+            'footer' => $footer
+        ]);
+    }
+
+    /**
+     * View form
+     *
+     * @param Request $request
+     * @param int $id
+     */
+    public function view(Request $request, int $id)
+    {
+        $answers = Answer::findOrFail($id);
+        $emails = Email::where('active', '=', 1)->get();
+        $formData = collect(json_decode($answers->form_data))->toArray();
+
+        $data = Form::with('fields')
+            ->where('id', '=', $answers->form_id)
+            ->first();
+
+        $view = 'form_default';
+        if (!empty($data->view)) {
+            $view = 'form_' . $data->view;
+        }
+
+        // Create a collection keyed by field name
+        $fields = Form::fieldHtml($data, $formData, true);
+
+        // View
+        $header = view('layouts.form_header', [
+            'mode' => 'view',
+            'answers' => $answers,
+            'id' => $data->id,
+        ]);
+        $footer = view('layouts.form_footer', [
+            'mode' => 'view',
+            'id' => $data->id,
+            'emails' => $emails,
+        ]);
+
+        return view($view, [
+            'user' => Auth::user(),
+            'title' => ucwords(str_replace("_", " ", $data->name)),
+            'link' => url()->current(),
+            'fields' => $fields,
+            'data' => $data,
+            'id' => $data->id,
+            'answers' => $answers,
+            'header' => $header,
+            'footer' => $footer
         ]);
     }
 

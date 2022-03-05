@@ -39,6 +39,14 @@ Route::get('/test_email', [VistechController::class, 'test_email'])
     ->middleware(['auth'])
     ->name('test_email');
 
+Route::get('/email_submission/{i}', [VistechController::class, 'email_submission'])
+    ->middleware(['auth'])
+    ->name('email_submission');
+
+Route::get('/form/view/{i}', [VistechController::class, 'view'])
+    ->middleware(['auth'])
+    ->name('view_form');
+
 Route::post('/edit/{i}/{j}', [VistechController::class, 'edit'])
     ->middleware(['auth'])
     ->name('edit');
