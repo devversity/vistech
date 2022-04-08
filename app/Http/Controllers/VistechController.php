@@ -407,8 +407,8 @@ class VistechController extends Controller
 
         // Get emails
         $emails = $request->post('emails', []);
-        $emailsOther = explode(",", $request->post('email_other', ''));
-        $emails = array_merge($emails, $emailsOther);
+//        $emailsOther = explode(",", $request->post('email_other', ''));
+//        $emails = array_merge($emails, $emailsOther);
 
         // Set formData
         $formData = array_merge($request->post(), $files);

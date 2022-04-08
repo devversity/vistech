@@ -27,8 +27,8 @@
             <?php
             $sections = [
                 'time_of_call_out',
-                'time_on_site',
                 'time_left_site',
+                'time_on_site',
             ];
             ?>
             @foreach ($sections as $section)
@@ -65,7 +65,6 @@
             $sections = [
                 'attending_officers_name',
                 'attending_officers_sia_number',
-                'attending_officers_signature',
             ];
             ?>
             @foreach ($sections as $section)
@@ -172,6 +171,34 @@
         </div>
     </div>
 </div>
+@php
+    $images = false;
+@endphp
+@for ($i=1; $i<6; $i++)
+    @if(!empty($fields['form_image_' . $i]))
+        @php
+            $images = true;
+        @endphp
+    @endif
+@endfor
+
+@if($images === true)
+<div class="card card-primary card-outline p-5">
+    <div class="row">
+        <div class="col-12">
+            <h4>Image Uploads</h4>
+            <hr/>
+        </div>
+    </div>
+    <div class="row">
+        @for ($i=1; $i<6; $i++)
+            @if(!empty($fields['form_image_' . $i]))
+                {!! $fields['form_image_' . $i] !!}
+            @endif
+        @endfor
+    </div>
+</div>
+@endif
 
 {!! isset($footer) ? $footer : null  !!}
 

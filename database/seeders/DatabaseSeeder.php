@@ -21,20 +21,14 @@ class DatabaseSeeder extends Seeder
     {
         $users = [
             0 => [
-                'name' => 'Stuart Todd',
-                'email' => 'stuarttodd444@gmail.com',
-                'password' => Hash::make('vistech12345'),
-                'permission_id' => 1
-            ],
-            1 => [
                 'name' => 'James Garvey',
                 'email' => 'james@garveys.co.uk',
                 'password' => Hash::make('vistech12345'),
                 'permission_id' => 1
             ],
-            2 => [
-                'name' => 'Test Form Person',
-                'email' => 'stuarttodd444+test@gmail.com',
+            1 => [
+                'name' => 'James Garvey',
+                'email' => 'signup@arveys.co.uk',
                 'password' => Hash::make('vistech12345'),
                 'permission_id' => 2
             ],
@@ -44,8 +38,8 @@ class DatabaseSeeder extends Seeder
         $forms = [
             'Incident Report' => 'incident_report',
             'Alarm Response' => 'alarm_response',
-            'KPI' => null,
-            'Void Property Inspection' => null,
+            'Key Performance Indicator (KPI)' => null,
+            'Void Property Inspection (VPI)' => null,
         ];
 
         // Types
@@ -65,12 +59,12 @@ class DatabaseSeeder extends Seeder
         // Emails
         $emails = [
             0 => [
-                'name' => 'Stuart Todd',
-                'email' => 'stuarttodd444@gmail.com',
+                'name' => 'Control',
+                'email' => 'control@vistechservices.co.uk',
             ],
             1 => [
-                'name' => 'James Garvey',
-                'email' => 'james@garveys.co.uk',
+                'name' => 'Operations',
+                'email' => 'operations@vistechservices.co.uk',
             ]
         ];
 
@@ -149,6 +143,15 @@ class DatabaseSeeder extends Seeder
      */
     private function getFormFields()
     {
+
+//        // Forms
+//        $forms = [
+//            'Incident Report' => 'incident_report',
+//            'Alarm Response' => 'alarm_response',
+//            'KPI' => null,
+//            'Void Property Inspection' => null,
+//        ];
+
         return [
             1 => [
                 'site_name' => [
@@ -212,14 +215,8 @@ class DatabaseSeeder extends Seeder
                     'options' => json_encode(['Yes', 'No']),
                     'field_type_id' => 4,
                 ],
-                'officers_surname' => [
-                    'nice_name' => 'Officers surname',
-                    'default' => null,
-                    'options' => null,
-                    'field_type_id' => 1,
-                ],
-                'officers_forename' => [
-                    'nice_name' => 'Officers forename',
+                'officers_name' => [
+                    'nice_name' => 'Officers Name',
                     'default' => null,
                     'options' => null,
                     'field_type_id' => 1,
@@ -238,12 +235,6 @@ class DatabaseSeeder extends Seeder
                 ],
                 'people_informed' => [
                     'nice_name' => 'People informed',
-                    'default' => null,
-                    'options' => null,
-                    'field_type_id' => 1,
-                ],
-                'security_officer_signature' => [
-                    'nice_name' => 'Security officer signature',
                     'default' => null,
                     'options' => null,
                     'field_type_id' => 1,
@@ -271,18 +262,6 @@ class DatabaseSeeder extends Seeder
                     'default' => null,
                     'options' => null,
                     'field_type_id' => 7,
-                ],
-                'witness_signature_1' => [
-                    'nice_name' => 'Signature',
-                    'default' => null,
-                    'options' => null,
-                    'field_type_id' => 1,
-                ],
-                'witness_signature_2' => [
-                    'nice_name' => 'Signature',
-                    'default' => null,
-                    'options' => null,
-                    'field_type_id' => 1,
                 ],
                 'witness_statement_1_surname' => [
                     'nice_name' => 'Surname',
@@ -320,12 +299,6 @@ class DatabaseSeeder extends Seeder
                     'options' => null,
                     'field_type_id' => 2,
                 ],
-                'witness_statement_1_signature' => [
-                    'nice_name' => 'Signature',
-                    'default' => null,
-                    'options' => null,
-                    'field_type_id' => 1,
-                ],
                 'witness_statement_2_surname' => [
                     'nice_name' => 'Surname',
                     'default' => null,
@@ -361,12 +334,6 @@ class DatabaseSeeder extends Seeder
                     'default' => null,
                     'options' => null,
                     'field_type_id' => 2,
-                ],
-                'witness_statement_2_signature' => [
-                    'nice_name' => 'Signature',
-                    'default' => null,
-                    'options' => null,
-                    'field_type_id' => 1,
                 ],
             ],
             2 => [
@@ -420,12 +387,6 @@ class DatabaseSeeder extends Seeder
                 ],
                 'attending_officers_sia_number' => [
                     'nice_name' => 'Attending Officers SIA Number',
-                    'default' => null,
-                    'options' => null,
-                    'field_type_id' => 1,
-                ],
-                'attending_officers_signature' => [
-                    'nice_name' => 'Attending Officers Signature',
                     'default' => null,
                     'options' => null,
                     'field_type_id' => 1,
@@ -541,7 +502,7 @@ class DatabaseSeeder extends Seeder
             ],
             3 => [
                 'security_officer' => [
-                    'nice_name' => 'Security Officer',
+                    'nice_name' => 'Security Officer/Personnel',
                     'default' => null,
                     'options' => null,
                     'field_type_id' => 1,
@@ -552,8 +513,8 @@ class DatabaseSeeder extends Seeder
                     'options' => null,
                     'field_type_id' => 1,
                 ],
-                'customer' => [
-                    'nice_name' => 'Customer',
+                'site' => [
+                    'nice_name' => 'Site',
                     'default' => null,
                     'options' => null,
                     'field_type_id' => 1,
@@ -576,12 +537,6 @@ class DatabaseSeeder extends Seeder
                     'options' => null,
                     'field_type_id' => 1,
                 ],
-                'site' => [
-                    'nice_name' => 'Site',
-                    'default' => null,
-                    'options' => null,
-                    'field_type_id' => 1,
-                ],
                 'tdr_completed_fpr_specific_site' => [
                     'nice_name' => 'TDR Completed for specific site?',
                     'default' => 'No',
@@ -589,19 +544,19 @@ class DatabaseSeeder extends Seeder
                     'field_type_id' => 4,
                 ],
                 'full_uniform' => [
-                    'nice_name' => 'Full Uniform? If not please state what is needed and side.',
+                    'nice_name' => 'Full Uniform? If not please state what is needed and size.',
                     'default' => null,
                     'options' => null,
                     'field_type_id' => 1,
                 ],
                 'vistech_id_badge' => [
-                    'nice_name' => 'Vistech ID Badge? If not please take photo',
+                    'nice_name' => 'Vistech ID Badge (IF Yes, please upload photo)',
                     'default' => 'No',
                     'options' => null,
-                    'field_type_id' => 8,
+                    'field_type_id' => 4,
                 ],
                 'sia_badge_on_display' => [
-                    'nice_name' => 'SIA Badge on display?',
+                    'nice_name' => 'SIA Badge (IF Yes, please upload photo)',
                     'default' => 'No',
                     'options' => json_encode(['Yes', 'No']),
                     'field_type_id' => 4,
@@ -701,12 +656,6 @@ class DatabaseSeeder extends Seeder
                     'default' => null,
                     'options' => null,
                     'field_type_id' => 2,
-                ],
-                'officer_signature' => [
-                    'nice_name' => 'Officer Signature',
-                    'default' => null,
-                    'options' => null,
-                    'field_type_id' => 1,
                 ],
             ],
             4 => [
@@ -860,37 +809,6 @@ class DatabaseSeeder extends Seeder
                     'options' => json_encode(['Yes', 'No']),
                     'field_type_id' => 4,
                 ],
-                'site_picture_1' => [
-                    'nice_name' => 'Please take a picture of the site',
-                    'default' => null,
-                    'options' => null,
-                    'field_type_id' => 8,
-                ],
-                'site_picture_2' => [
-                    'nice_name' => 'Please take a picture of the site',
-                    'default' => null,
-                    'options' => null,
-                    'field_type_id' => 8,
-                ],
-                'site_picture_3' => [
-                    'nice_name' => 'Please take a picture of the site',
-                    'default' => null,
-                    'options' => null,
-                    'field_type_id' => 8,
-                ],
-                'site_picture_4' => [
-                    'nice_name' => 'Please take a picture of the site',
-                    'default' => null,
-                    'options' => null,
-                    'field_type_id' => 8,
-                ],
-                'site_picture_5' => [
-                    'nice_name' => 'Please take a picture of the site',
-                    'default' => null,
-                    'options' => null,
-                    'field_type_id' => 8,
-                ],
-
             ]
         ];
     }

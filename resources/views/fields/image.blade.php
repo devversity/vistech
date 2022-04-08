@@ -1,7 +1,9 @@
 <div class="form-group">
-    <label for="field_{{$field->id}}">{{ $field->nice_name }}</label>
-    @if($disabled === false)
-    <input type="file" id="field_{{$field->id}}" name="{{ $field->name }}">
+    @if(!empty($field))
+        <label for="field_{{$field->id}}">{{ $field->nice_name }}</label>
+        @if($disabled === false)
+        <input type="file" id="field_{{$field->id}}" name="{{ $field->name }}">
+        @endif
     @endif
 
     @if(!empty($value->filename))

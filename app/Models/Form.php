@@ -42,8 +42,6 @@ class Form extends Model
                 $value = $formData[$field->name];
             }
 
-            //dd($formData);
-
             $fields[$field->name] = view('fields.' . strtolower($field->type->name), [
                 'field' => $field,
                 'value' => $value,
@@ -52,6 +50,23 @@ class Form extends Model
             ])->render();
 
         }
+
+        // HACK but I CBA.
+        foreach ($formData as $name => $data) {
+            if (strpos($name, 'form_image') > -1) {
+                $data->name = $name;
+                $data->id = rand(0,999);
+                $data->nice_name = str_replace('_', ' ', ucwords($data->name));
+
+                $fields[$name] = view('fields.image', [
+                    'field' => $data,
+                    'value' => $data,
+                    'disabled' => true,
+                    'formData' => $formData
+                ])->render();
+            }
+        }
+
         return $fields;
     }
 }
